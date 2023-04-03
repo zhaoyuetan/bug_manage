@@ -121,7 +121,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 SMS = 0 # 在localsettings重写
 
-#try:
-#    from .local_settings import *
-#except ImportError:
-#    pass 
+try:
+    from .local_settings import *
+except ImportError:
+    pass 
