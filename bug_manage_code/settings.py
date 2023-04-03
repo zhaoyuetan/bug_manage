@@ -117,9 +117,20 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# 创建local_setings.py可以对默认值进行覆盖，如果导入失败就pass
+#  创建local_setings.py可以对默认值进行覆盖，如果导入失败就pass
 
-SMS = 0 # 在localsettings重写
+"""sms,需要在local_settings中设置，下面的模板"""
+#  自己应用ID
+TENCENT_SMS_APP_ID = 112142311  
+#  自己应用Key
+TENCENT_SMS_APP_KEY = "8cc5b87123y423423412387930004"  
+#  签名内容（使用公众号的话这个值一般是公众号全称或简称）
+TENCENT_SMS_SIGN = "Python之路"  
+#  模板ID，对应于注册和登录模板
+TENCENT_SMS_TEMPLATE = {
+    "register":0000,
+    "login":00000
+}
 
 try:
     from .local_settings import *

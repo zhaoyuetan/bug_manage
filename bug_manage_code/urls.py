@@ -15,7 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from app01.views import tencent
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+
+    #腾讯组件，发送短信
+    path("send/sms/", tencent.send_sms),#短信验证码发送
 ]
