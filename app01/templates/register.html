@@ -1,0 +1,137 @@
+{% extends 'layout/basic.html'  %}
+{% load static %}
+
+{% block title %}
+用户注册
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css\account.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="account">
+    <div class="title">注册</div>
+    <form novalidate id="regForm">
+        {% csrf_token %}
+        {% for field in form %}
+            <!--如果是验证码字段，要给他增加一个点击获取验证码的按钮-->
+            {% if field.name == 'code' %}
+                <div class="form-group">
+                    <!--for参数后面写输入框id，当点击标签的时候页面会聚焦到对应输入框-->
+                    <label for="{{field.id_for_label}}">{{field.label}}</label>
+                    <div class="clearfix">
+                        <div class="col-sm-7" style="padding-left: 0;">
+                            {{ field}}
+                            <span class="error-msg" ></span>
+                        </div>
+                        <div class="col-sm-5" style="padding-right: 0;">
+                                <input id="btnSms" type="button" class="btn btn-default" value="点击获取验证码">
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="form-group">
+                    <!--for参数后面写输入框id，当点击标签的时候页面会聚焦到对应输入框-->
+                    <label for="{{field.id_for_label}}">{{field.label}}</label>
+                    {{ field}}
+                    <span class="error-msg"></span>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </form>
+    <div class="row">
+        <div class="col-xs-3">
+            <button id="btnSubmit" type="button" class="btn btn-primary">注 册</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+    $(function(){
+        //  页面加载完成自动执行以下内容
+        bindClickBtnSms();//  点击获取验证码
+        bindClickBtnSubmit();//  点击注册
+    });
+    /*
+    点击注册
+    */
+    function bindClickBtnSubmit() {
+        $("#btnSubmit").click(function () {
+            //  数据ajax发送给后台
+            $.ajax({
+                url:"{% url 'register' %}",
+                type:"POST",
+                dataType:"JSON",
+                //  serialize()收集表单数据
+                //  并且通过隐藏的input框携带了，csrf_token
+                data:$('#regForm').serialize(),
+                success:function(res){
+                    console.log(res);
+                }
+            });
+        });
+    }
+    /*
+    点击获取验证码
+    */ 
+    function bindClickBtnSms(){
+        $('#btnSms').click(function(){
+            //  modelform自动生成的输入框id是id_字段名
+            //  先清空报错信息
+            $("#id_mobile_phone").next().empty()
+
+            // 获取用户输入的手机号
+            var mobilePhone = $("#id_mobile_phone").val();
+
+            $.ajax({
+                //  通过url反向解析出url等价"/send/sms"
+                url:"{% url 'send_sms' %}",
+                type:"GET",
+                dataType:"JSON",
+                data : {
+                    mobile_phone:mobilePhone,
+                    tpl:"register"
+                },
+                success:function(res){
+                    if (res.status){
+                        sendSmsRemind(60);
+                    }else{
+                        $.each(res.error,function(name,value){
+                            //给对应输入框的下一个span标签添加错误信息
+                            $("#id_" + name).next().text(value)
+                        });
+                    }
+                }
+            });
+        });
+    }
+
+    /*
+    按钮失效和倒计时
+    */
+    function sendSmsRemind(remindTime){
+        var $btnSms = $("#btnSms")
+
+        var time = remindTime;//  倒计时remindTime秒
+        
+        $btnSms.prop("disabled",true);//  让按钮不可以使用
+        //  创建定时器，每1秒钟让time减1，指导60被减为0结束
+        var remind = setInterval(function(){
+            $btnSms.val(time + '秒后重新发送');//  让按钮显示xx秒后重新发送
+            time = time - 1;
+            if(time < 1){
+                clearInterval(remind);//  关闭定时器
+                $btnSms.prop("disabled",false);//  让按钮可以使用
+                $btnSms.val('点击获取验证码');
+            }
+        },1000);
+    } 
+
+
+
+</script>
+
+{% endblock %}

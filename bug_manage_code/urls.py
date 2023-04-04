@@ -14,12 +14,12 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
-from app01.views import tencent
+from django.urls import path,include
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-
-    #腾讯组件，发送短信
-    path("send/sms/", tencent.send_sms),#短信验证码发送
+    #path('app01/',include(('app01.urls','app01'),namespace='app01')),
+    #  由于只有一个app，因此可以不加前缀直接分配
+    path('',include(('app01.urls'))),
+    
 ]

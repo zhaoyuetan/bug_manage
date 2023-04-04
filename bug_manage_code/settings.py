@@ -119,7 +119,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 #  创建local_setings.py可以对默认值进行覆盖，如果导入失败就pass
 
-"""sms,需要在local_settings中设置，下面的模板"""
+"""sms的配置,需要在local_settings中设置，下面的模板"""
 #  自己应用ID
 TENCENT_SMS_APP_ID = 112142311  
 #  自己应用Key
@@ -132,6 +132,22 @@ TENCENT_SMS_TEMPLATE = {
     "login":00000
 }
 
+"""redis的配置，需要在local_settings中设置，下面的模板"""
+#  创建redis连接池
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://连接redis的IP:6379", #  安装redis的主机的 IP 和 端口
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "CONNECTION_POOL_KWARGS": {
+                "max_connections": 1000,
+                "encoding": 'utf-8'
+            },
+            "PASSWORD": "foobared" #  redis密码
+        }
+    }
+}
 try:
     from .local_settings import *
 except ImportError:
