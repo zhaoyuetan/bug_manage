@@ -50,7 +50,7 @@ class SendSmsForm(forms.Form):
             mobile_phone=mobile_phone).exists()
         if exists:
             raise ValidationError('手机号已存在')
-        """
+
         #  发短信给用户
         #  随机四位数验证码
         code = random.randrange(1000, 9999)
@@ -69,7 +69,7 @@ class SendSmsForm(forms.Form):
         #  获取存储的键为mobile_phone的值，60秒内有效
         value = conn.get(mobile_phone)
         print(value)
-        """
+
 
         return mobile_phone
 
