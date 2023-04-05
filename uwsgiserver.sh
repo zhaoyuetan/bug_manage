@@ -1,7 +1,7 @@
 #!/bin/bash
  
-INI="/www/mysite1/uwsgi/uwsgi.ini"
-UWSGI="/virtualenvs/venv/bin/uwsgi"
+INI="/www/mysite1/uwsgi/nb_uwsgi.ini"
+UWSGI="/envs/bin/uwsgi"
 PSID="ps aux | grep "uwsgi"| grep -v "grep" | wc -l"
  
 if [ ! -n "$1" ]
