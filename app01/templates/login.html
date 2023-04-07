@@ -1,0 +1,72 @@
+{% extends 'layout/basic.html'  %}
+{% load static %}
+
+{% block title %}
+密码登录
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css\account.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="account">
+    <div class="title">密码登录</div>
+    <form novalidate id="loginForm" method="post">
+        {% csrf_token %}
+        {% for field in form %}
+            <!--如果是验证码字段，要给他增加一个点击获取验证码的按钮-->
+            {% if field.name == 'code' %}
+                <div class="form-group">
+                    <!--for参数后面写输入框id，当点击标签的时候页面会聚焦到对应输入框-->
+                    <label for="{{field.id_for_label}}">{{field.label}}</label>
+                    <div class="clearfix">
+                        <div class="col-sm-7" style="padding-left: 0;">
+                            {{ field}}
+                            <span class="error-msg" >{{field.errors.0}}</span>
+                        </div>
+                        <div class="col-sm-5" style="padding-right: 0;">
+                            <img  src="{% url 'image_code' %}" id="imageCode" title="点击更换图片">
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="form-group">
+                    <!--for参数后面写输入框id，当点击标签的时候页面会聚焦到对应输入框-->
+                    <label for="{{field.id_for_label}}">{{field.label}}</label>
+                    {{ field}}
+                    <span class="error-msg">{{field.errors.0}}</span>
+                </div>
+            {% endif %}
+        {% endfor %}
+        <div class="clearfix">
+            <div style="float: right;">
+                <a href="{% url 'register' %}">未注册，请先注册？</a>
+                <a href="{% url 'login_sms' %}">短信登录？</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-3">
+                <input type="submit" value="登 录" class="btn btn-primary">
+            </div>
+        </div>
+
+    </form>
+
+</div>
+{% endblock %}
+
+{% block js %}
+
+<script>
+    $(function(){
+        $("#imageCode").click(function(){
+            var oldSrc = $(this).attr('src'); //  获取图片验证码的地址
+            //  给老的地址加个问号相当于再次请求后端的生成验证码的视图函数
+            //  后端的session的存储也会更新改变
+            $(this).attr('src',oldSrc + "?");
+        });
+    });
+</script>
+
+{% endblock %}

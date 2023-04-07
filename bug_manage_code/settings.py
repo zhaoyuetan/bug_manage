@@ -20,12 +20,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-mvpiwt7(m#fr-z$4)d^w1*2$w9+a_emgxputi5d8c+p7#6u506"
+SECRET_KEY = "md5加密的盐"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+
 
 
 # Application definition
@@ -48,6 +48,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "app01.middleware.auth.AuthMiddleware",
 ]
 
 ROOT_URLCONF = "bug_manage_code.urls"
@@ -70,16 +71,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "bug_manage_code.wsgi.application"
 
-
-# Database
-# https://docs.djangoproject.com/en/4.1/ref/settings/#databases
-
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
-}
 
 
 # Password validation
@@ -119,6 +110,24 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 #  创建local_setings.py可以对默认值进行覆盖，如果导入失败就pass
 
+"""允许访问的主机名可在localsetting更改"""
+ALLOWED_HOSTS = []
+
+"""要连接的数据库可在localsetting更改"""
+# Database
+# https://docs.djangoproject.com/en/4.1/ref/settings/#databases
+
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
+    }
+}
+
+
+
+
+
 """sms的配置,需要在local_settings中设置，下面的模板"""
 #  自己应用ID
 TENCENT_SMS_APP_ID = 112142311  
@@ -148,6 +157,10 @@ CACHES = {
         }
     }
 }
+
+
+
+
 try:
     from .local_settings import *
 except ImportError:

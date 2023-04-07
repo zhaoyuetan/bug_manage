@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block title %}
-用户注册
+短信登录
 {% endblock %}
 
 {% block css %}
@@ -11,8 +11,8 @@
 
 {% block content %}
 <div class="account">
-    <div class="title">注册</div>
-    <form novalidate id="regForm">
+    <div class="title">短信登录</div>
+    <form novalidate id="smsForm">
         {% csrf_token %}
         {% for field in form %}
             <!--如果是验证码字段，要给他增加一个点击获取验证码的按钮-->
@@ -40,14 +40,15 @@
             {% endif %}
         {% endfor %}
     </form>
-    <div class="clearfix">
-        <div style="float: right;">
-            <a href="{% url 'login' %}">已注册，直接登录？</a>
-        </div>
-    </div>
     <div class="row">
         <div class="col-xs-3">
-            <button id="btnSubmit" type="button" class="btn btn-primary">注 册</button>
+            <button id="btnSubmit" type="button" class="btn btn-primary">登 录</button>
+        </div>
+    </div>
+    <div class="clearfix">
+        <div style="float: right;">
+            <a href="{% url 'register' %}">未注册，请先注册？</a>
+            <a href="{% url 'login' %}">密码登录？</a>
         </div>
     </div>
 </div>
@@ -58,10 +59,10 @@
     $(function(){
         //  页面加载完成自动执行以下内容
         bindClickBtnSms();//  点击获取验证码
-        bindClickBtnSubmit();//  点击注册
+        bindClickBtnSubmit();//  点击登录按钮
     });
     /*
-    点击注册
+    点击登录按钮
     */
     function bindClickBtnSubmit() {
         $("#btnSubmit").click(function () {
@@ -69,12 +70,12 @@
             $(".error-msg").empty();
             //  数据ajax发送给后台
             $.ajax({
-                url:"{% url 'register' %}",
+                url:"{% url 'login_sms' %}",
                 type:"POST",
                 dataType:"JSON",
                 //  serialize()收集表单数据
                 //  并且通过隐藏的input框携带了，csrf_token
-                data:$('#regForm').serialize(),
+                data:$('#smsForm').serialize(),
                 success:function(res){   
                     if (res.status){
                         // 重定向到登录界面
@@ -90,6 +91,7 @@
             });
         });
     }
+
     /*
     点击获取验证码
     */ 
@@ -109,7 +111,7 @@
                 dataType:"JSON",
                 data : {
                     mobile_phone:mobilePhone,
-                    tpl:"register"
+                    tpl:"login"
                 },
                 success:function(res){
                     if (res.status){
@@ -146,8 +148,6 @@
             }
         },1000);
     } 
-
-
 
 </script>
 
